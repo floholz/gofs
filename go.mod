@@ -1,4 +1,4 @@
-module gofs
+module github.com/floholz/gofs
 
 go 1.21.5
 
