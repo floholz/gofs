@@ -24,7 +24,7 @@ func main() {
 	pflag.StringVarP(&outPath, "expose", "e", "", "Url path, where the file/directory will be exposed")
 
 	var port string
-	pflag.StringVarP(&port, "port", "p", "5000", "Port to run the server on. Default is 5000")
+	pflag.StringVarP(&port, "port", "p", "8080", "Port to run the server on. Default is 8080")
 
 	pflag.Parse()
 
