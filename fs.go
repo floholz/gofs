@@ -2,13 +2,13 @@ package main
 
 import (
 	"fmt"
-	"github.com/mgutz/ansi"
 	"net/http"
 	"os"
 	"regexp"
 	"strings"
 	"time"
 
+	"github.com/mgutz/ansi"
 	"github.com/spf13/pflag"
 )
 
