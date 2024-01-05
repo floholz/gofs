@@ -55,10 +55,10 @@ jobs:
       - name: Start server file and url
         uses: miguelteixeiraa/action-run-in-background@v1
         with:
-          script: go run fs.go _README.md --url "0.0.0.0:1234/test.xy"
+          script: go run fs.go README.md --url "0.0.0.0:1234/test.txt"
           readiness-script: |
             # check if whatever is it to run, is ready
-            if curl -sSf http://0.0.0.0:1234/test.xy > /dev/null; then
+            if curl -sSf http://0.0.0.0:1234/test.txt > /dev/null; then
                 echo "yep"
                 exit 0
             else

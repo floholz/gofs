@@ -4,7 +4,7 @@
 ![GitHub License](https://img.shields.io/github/license/floholz/gofs)
 ![GitHub go.mod Go version (subdirectory of monorepo)](https://img.shields.io/github/go-mod/go-version/floholz/gofs?logo=go&labelColor=gray&label=%20)
 
-***
+---
 
 > This is a simple fileserver tool to expose a file or directory locally. 
 > It also has the option to rebind the url to a different path when exposing. 
@@ -61,7 +61,7 @@ By leaving the `hostname`, `port` or `path` empty, it will be set to its default
 | ~/my-dir/         | /custom/path/                  | http://localhost:8080/custom/path/      |
 
 
-***
+---
 
 ### 🤝 Contributing
 
@@ -76,7 +76,7 @@ Copyright © 2024 [floholz](https://github.com/floholz).
 
 This project is [MIT](./LICENSE) licensed.
 
-***
+---
 
 ### Show your support
 
