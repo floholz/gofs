@@ -1,0 +1,68 @@
+name: Go
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version-file: go.mod
+
+      - name: Build
+        run: go build -v ./...
+
+      - name: Start server no arguments
+        uses: miguelteixeiraa/action-run-in-background@v1
+        with:
+          script: go run fs.go
+          readiness-script: |
+            # check if whatever is it to run, is ready
+            if curl -sSf http://localhost:8080/ > /dev/null; then
+                echo "yep"
+                exit 0
+            else
+                echo "nop"
+                exit 1
+            fi
+          timeout: 5
+
+
+      - name: Start server file
+        uses: miguelteixeiraa/action-run-in-background@v1
+        with:
+          script: go run fs.go fs.go
+          readiness-script: |
+            # check if whatever is it to run, is ready
+            if curl -sSf http://localhost:8080/fs.go > /dev/null; then
+                echo "yep"
+                exit 0
+            else
+                echo "nop"
+                exit 1
+            fi
+          timeout: 5
+
+      - name: Start server file and url
+        uses: miguelteixeiraa/action-run-in-background@v1
+        with:
+          script: go run fs.go _README.md --url "0.0.0.0:1234/test.xy"
+          readiness-script: |
+            # check if whatever is it to run, is ready
+            if curl -sSf http://0.0.0.0:1234/test.xy > /dev/null; then
+                echo "yep"
+                exit 0
+            else
+                echo "nop"
+                exit 1
+            fi
+          timeout: 5
