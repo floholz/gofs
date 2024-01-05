@@ -1,5 +1,5 @@
 # Welcome to gofs 👋
-[![GitHub tag (with filter)](https://img.shields.io/github/v/tag/floholz/gofs?label=latest)](https://github.com/floholz/gofs/releases/latest)
+[![GitHub tag (with filter)](https://img.shields.io/github/v/release/floholz/gofs?label=latest)](https://github.com/floholz/gofs/releases/latest)
 [![GitHub Workflow Status (with event)](https://img.shields.io/github/actions/workflow/status/floholz/gofs/go.yml)](https://github.com/floholz/gofs/actions/workflows/go.yml)
 [![GitHub License](https://img.shields.io/github/license/floholz/gofs)](./LICENSE)
 [![GitHub go.mod Go version (subdirectory of monorepo)](https://img.shields.io/github/go-mod/go-version/floholz/gofs?logo=go&labelColor=gray&label=%20)](https://go.dev/dl/)
