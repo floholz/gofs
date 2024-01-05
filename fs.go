@@ -3,8 +3,8 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"net/url"
 	"os"
-	"regexp"
 	"strings"
 	"time"
 
@@ -14,66 +14,94 @@ import (
 
 func main() {
 
-	var filePath string
-	pflag.StringVarP(&filePath, "file", "f", "", "Path to a single file, you want to exposed")
-
-	var dirPath string
-	pflag.StringVarP(&dirPath, "dir", "d", "", "Path to the directory, you want to exposed")
-
-	var outPath string
-	pflag.StringVarP(&outPath, "expose", "e", "", "Url path, where the file/directory will be exposed")
-
-	var port string
-	pflag.StringVarP(&port, "port", "p", "8080", "Port to run the server on. Default is 8080")
+	var urlIn string
+	pflag.StringVarP(&urlIn, "url", "u", "localhost:8080",
+		"Host and Port to run the server on. Default is 'localhost:8080'.")
 
 	pflag.Parse()
 
-	if filePath != "" && dirPath != "" {
-		fmt.Printf("%sError parsing flags: Only one of --file and --dir can be set!\n", ansi.LightRed)
-		os.Exit(2)
+	inPath := pflag.Arg(0)
+
+	urlIn = strings.TrimPrefix(urlIn, "https://")
+	urlIn = strings.TrimPrefix(urlIn, "http://")
+
+	urlParsed, urlErr := url.Parse("http://" + urlIn)
+	if urlErr != nil {
+		fmt.Printf("%sError parsing host: Flag --host must be a valid 'address:port/path' combination!\n", ansi.LightRed)
+		os.Exit(1)
 	}
 
-	isFileMode := filePath != ""
+	if urlParsed.Port() == "" {
+		urlParsed.Host = urlParsed.Host + ":8080"
+	}
+
+	if urlParsed.Hostname() == "" {
+		urlParsed.Host = "localhost" + urlParsed.Host
+	}
+
+	var isFileMode bool
+	if inPath == "" {
+		wd, err := os.Getwd()
+		if err != nil {
+			fmt.Printf("%sError retreiving working directory!\n", ansi.LightRed)
+			os.Exit(2)
+		}
+		inPath = wd
+		isFileMode = false
+	} else {
+		_isFileMode, fodErr := fileOrDir(inPath)
+		if fodErr != nil {
+			fmt.Printf("%sError parsing the in-path, --in must be a valid path to a file or directory!\n", ansi.LightRed)
+			os.Exit(2)
+		}
+		isFileMode = _isFileMode
+	}
 
 	if isFileMode {
-		reg, _ := regexp.Compile("\\.[a-zA-Z0-9]+$")
-		if !reg.MatchString(filePath) {
-			fmt.Printf("%sError parsing filepath: Flag --file must be a valid filepath!\n", ansi.LightRed)
-			os.Exit(3)
+		_inPath := strings.Split(inPath, "/\\")
+		fileName := _inPath[len(_inPath)-1]
+		if urlParsed.Path == "" {
+			urlParsed.Path = "/" + fileName
 		}
-		if !reg.MatchString(outPath) {
-			fmt.Printf("%sError parsing exposepath: Flag --expose must be a valid filepath!\n", ansi.LightRed)
-			os.Exit(4)
-		}
-		http.HandleFunc(outPath, func(w http.ResponseWriter, r *http.Request) {
+
+		http.HandleFunc(urlParsed.Path, func(w http.ResponseWriter, r *http.Request) {
 			w.Header().Set("Expires", time.Unix(0, 0).Format(time.RFC1123))
 			w.Header().Set("Cache-Control", "no-cache, private, max-age=0")
 			w.Header().Set("Pragma", "no-cache")
 			w.Header().Set("X-Accel-Expires", "0")
-			http.ServeFile(w, r, filePath)
+			http.ServeFile(w, r, inPath)
 		})
 	} else {
-		if !strings.HasSuffix(dirPath, "/") {
-			dirPath += "/"
+		if !strings.HasSuffix(inPath, "/") {
+			inPath += "/"
 		}
-		if !strings.HasSuffix(outPath, "/") {
-			outPath += "/"
+		if !strings.HasSuffix(urlParsed.Path, "/") {
+			urlParsed.Path += "/"
 		}
-		http.Handle(outPath, http.StripPrefix(outPath, http.FileServer(http.Dir(dirPath))))
+		http.Handle(urlParsed.Path, http.StripPrefix(urlParsed.Path, http.FileServer(http.Dir(inPath))))
 	}
 
 	msg := ansi.Reset + "Exposing "
 	if isFileMode {
-		msg += fmt.Sprintf("file '%s%s%s' ", ansi.LightCyan, filePath, ansi.Reset)
+		msg += "file "
 	} else {
-		msg += fmt.Sprintf("'%s%s%s' ", ansi.LightCyan, dirPath, ansi.Reset)
+		msg += "directory "
 	}
-	msg += fmt.Sprintf("on '%shttp://localhost:%s%s%s'\n", ansi.LightGreen, port, outPath, ansi.Reset)
+	msg += fmt.Sprintf("'%s%s%s' ", ansi.LightCyan, inPath, ansi.Reset)
+	msg += fmt.Sprintf("on '%s%s%s'\n", ansi.LightGreen, urlParsed.String(), ansi.Reset)
 
 	fmt.Println(msg)
 
-	err := http.ListenAndServe(":"+port, nil)
+	err := http.ListenAndServe(urlParsed.Host, nil)
 	if err != nil {
 		fmt.Println(ansi.LightRed+"Error starting server:", err)
 	}
+}
+
+func fileOrDir(path string) (bool, error) {
+	fileInfo, err := os.Stat(path)
+	if err != nil {
+		return false, err
+	}
+	return !fileInfo.IsDir(), err
 }
