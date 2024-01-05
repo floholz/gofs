@@ -1,14 +1,13 @@
 # Welcome to gofs 👋
-![GitHub tag (with filter)](https://img.shields.io/github/v/tag/floholz/gofs?label=latest)
-![GitHub Workflow Status (with event)](https://img.shields.io/github/actions/workflow/status/floholz/gofs/go.yml)
-![GitHub License](https://img.shields.io/github/license/floholz/gofs)
-![GitHub go.mod Go version (subdirectory of monorepo)](https://img.shields.io/github/go-mod/go-version/floholz/gofs?logo=go&labelColor=gray&label=%20)
+[![GitHub tag (with filter)](https://img.shields.io/github/v/tag/floholz/gofs?label=latest)](https://github.com/floholz/gofs/releases/latest)
+[![GitHub Workflow Status (with event)](https://img.shields.io/github/actions/workflow/status/floholz/gofs/go.yml)](https://github.com/floholz/gofs/actions/workflows/go.yml)
+[![GitHub License](https://img.shields.io/github/license/floholz/gofs)](./LICENSE)
+[![GitHub go.mod Go version (subdirectory of monorepo)](https://img.shields.io/github/go-mod/go-version/floholz/gofs?logo=go&labelColor=gray&label=%20)](https://go.dev/dl/)
 
----
 
 > This is a simple fileserver tool to expose a file or directory locally. 
-> It also has the option to rebind the url to a different path when exposing. 
-> It is written in golang.
+> The tool also has the option to rebind the url to a different path when exposing. 
+> It is written in Go.
 
 
 ## Install
