@@ -12,28 +12,28 @@
 
 ## Install
 
-```sh
-go get github.com/floholz/gofs
+```shell
+go install github.com/floholz/gofs@latest
 ```
 
 ## Usage
 
 To expose the current directory, simply run the package. By default, the directory will be exposed at `http://localhost:8080/`
 
-```sh
-go run github.com/floholz/gofs
+```shell
+gofs
 ```
 
 Instead of the active directory, you can choose a file or directory to expose by passing it as an argument.  
 
-```sh
-go run github.com/floholz/gofs ~/my-direcory/my-file.txt
+```shell
+gofs ~/my-direcory/my-file.txt
 ```
 
 To set the url, your file or directory should be exposed to, use the `--url` or `-u` flag.
 
-```sh
-go run github.com/floholz/gofs ~/my-direcory/my-file.txt --url 0.0.0.0:3003/path-to-file/file.json
+```shell
+gofs ~/my-direcory/my-file.txt --url 0.0.0.0:3003/path-to-file/file.json
 ```
 
 By leaving the `hostname`, `port` or `path` empty, it will be set to its default value.
